@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enroll in Healthcare Plan - HealthCare Plus</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header (Same as index.html) -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>HealthCare Plus</h1>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="enrollment.html" class="active">Enrollment</a></li>
+                    <li><a href="claims.html">Claims</a></li>
+                    <li><a href="benefits.html">Benefits</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="nav-buttons">
+                <button class="dark-mode-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="enrollment-section">
+            <div class="container">
+                <h1>Healthcare Plan Enrollment</h1>
+                
+                <!-- Enrollment Progress -->
+                <div class="enrollment-progress">
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Personal Information</div>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Medical History</div>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Plan Selection</div>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Review & Payment</div>
+                    </div>
+                </div>
+
+                <!-- Enrollment Forms -->
+                <div class="enrollment-form">
+                    <!-- Step 1: Personal Information -->
+                    <div class="enrollment-step" id="step1">
+                        <h2>Personal Information</h2>
+                        <form id="personalInfoForm">
+                            <div class="form-group">
+                                <label for="fullName">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" id="dob" name="dob" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="ssn">SSN</label>
+                                <input type="text" id="ssn" name="ssn" pattern="\d{3}-\d{2}-\d{4}" placeholder="XXX-XX-XXXX" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="address">Address</label>
+                                <input type="text" id="address" name="address" required>
+                            </div>
+                            
+                            <!-- Family members section -->
+                            <div class="family-members">
+                                <h3>Family Members</h3>
+                                <button type="button" class="btn secondary add-member">
+                                    <i class="fas fa-plus"></i> Add Family Member
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Step 2: Medical History -->
+                    <div class="enrollment-step hidden" id="step2">
+                        <!-- Medical history questions -->
+                    </div>
+
+                    <!-- Step 3: Plan Selection -->
+                    <div class="enrollment-step hidden" id="step3">
+                        <!-- Plan options and comparison -->
+                    </div>
+
+                    <!-- Step 4: Review & Payment -->
+                    <div class="enrollment-step hidden" id="step4">
+                        <!-- Summary and payment -->
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="enrollment-nav">
+                    <button class="btn secondary prev-step">Previous</button>
+                    <button class="btn primary next-step">Next</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Same as index.html) -->
+    <footer>
+        <!-- ... (same footer content as index.html) ... -->
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/hamburger.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/enrollment.js"></script>
+</body>
+</html> 

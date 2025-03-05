@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claims - HealthCare Plus</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>HealthCare Plus</h1>
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="enrollment.html">Enrollment</a></li>
+                    <li><a href="claims.html" class="active">Claims</a></li>
+                    <li><a href="benefits.html">Benefits</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="nav-buttons">
+                <button class="dark-mode-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Claims Section -->
+    <section class="claims-section">
+        <div class="container">
+            <h1>Insurance Claims</h1>
+            
+            <!-- Claims Tabs -->
+            <div class="claims-tabs">
+                <button class="tab-btn active" data-tab="submit">Submit Claim</button>
+                <button class="tab-btn" data-tab="track">Track Claims</button>
+            </div>
+
+            <!-- Submit Claim Form -->
+            <div class="tab-content active" id="submit">
+                <div class="claims-form-container">
+                    <form id="claimsForm" class="claims-form">
+                        <div class="form-group">
+                            <label for="claimType">Type of Claim</label>
+                            <select id="claimType" name="claimType" required>
+                                <option value="">Select claim type</option>
+                                <option value="medical">Medical Visit</option>
+                                <option value="prescription">Prescription</option>
+                                <option value="dental">Dental</option>
+                                <option value="vision">Vision</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="serviceDate">Date of Service</label>
+                            <input type="date" id="serviceDate" name="serviceDate" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="provider">Healthcare Provider</label>
+                            <input type="text" id="provider" name="provider" placeholder="Enter provider name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="amount">Amount Claimed ($)</label>
+                            <input type="number" id="amount" name="amount" step="0.01" min="0" placeholder="0.00" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea id="description" name="description" rows="4" placeholder="Describe the service or treatment"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Supporting Documents</label>
+                            <div class="file-upload-section">
+                                <div class="file-drop-zone">
+                                    <input type="file" class="file-input" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <p>Drag and drop files here or click to browse</p>
+                                    <span class="file-hint">Upload receipts, prescriptions, or medical reports (PDF, Word, Images)</span>
+                                </div>
+                                <div class="file-list">
+                                    <!-- File previews will be added here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="claims-actions">
+                            <p>Want to check your existing claims?</p>
+                            <a href="claims-status.html" class="btn secondary">
+                                <i class="fas fa-list"></i>
+                                View All Claims
+                            </a>
+                        </div>
+
+                        <button type="submit" class="btn primary">Submit Claim</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Track Claims -->
+            <div class="tab-content" id="track">
+                <div class="claims-tracking">
+                    <h2>Track Your Claims</h2>
+                    <div class="search-claims">
+                        <input type="text" placeholder="Search by claim number...">
+                        <button class="btn secondary"><i class="fas fa-search"></i> Search</button>
+                    </div>
+                    
+                    <div class="claims-list">
+                        <div class="claim-card">
+                            <div class="claim-header">
+                                <h3>Claim #12345</h3>
+                                <span class="status pending">Pending</span>
+                            </div>
+                            <div class="claim-details">
+                                <p><strong>Type:</strong> Medical Visit</p>
+                                <p><strong>Date:</strong> 2024-03-15</p>
+                                <p><strong>Amount:</strong> $150.00</p>
+                            </div>
+                            <button class="btn secondary">View Details</button>
+                        </div>
+
+                        <div class="claim-card">
+                            <div class="claim-header">
+                                <h3>Claim #12344</h3>
+                                <span class="status approved">Approved</span>
+                            </div>
+                            <div class="claim-details">
+                                <p><strong>Type:</strong> Prescription</p>
+                                <p><strong>Date:</strong> 2024-03-10</p>
+                                <p><strong>Amount:</strong> $75.50</p>
+                            </div>
+                            <button class="btn secondary">View Details</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="claim-progress">
+                <div class="progress-step completed">
+                    <div class="step-icon"><i class="fas fa-file-medical"></i></div>
+                    <div class="step-label">Submitted</div>
+                </div>
+                <div class="progress-step active">
+                    <div class="step-icon"><i class="fas fa-clipboard-check"></i></div>
+                    <div class="step-label">Under Review</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="step-label">Processed</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>
+                    <i class="fas fa-phone"></i> 1-800-HEALTH-PLUS<br>
+                    <i class="fas fa-envelope"></i> info@healthcareplus.com<br>
+                    <i class="fas fa-location-dot"></i> 123 Healthcare Ave, Medical City
+                </p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 HealthCare Plus. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/hamburger.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/fileUpload.js"></script>
+    <script src="js/claims.js"></script>
+</body>
+</html> 
