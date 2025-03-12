@@ -1943,3 +1943,21 @@ body.dark-mode .dark-mode-toggle i {
     padding-top: 2rem;
     border-top: 1px solid #ddd;
 } 
+/* Add these styles if they're not already present */
+.social-login {
+    margin-bottom: 20px;
+    width: 100%;
+    min-height: 40px;
+    display: block;
+}
+
+.google-btn {
+    min-height: 40px;
+    width: 100%;
+    display: block;
+}
+
+body.dark-mode .google-btn {
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
