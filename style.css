@@ -1941,4 +1941,55 @@ body.dark-mode .dark-mode-toggle i {
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 1px solid #ddd;
-} 
+}
+
+/* Social Login Styles */
+.auth-divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 1px;
+    background-color: #ddd;
+}
+
+.auth-divider::before {
+    left: 0;
+}
+
+.auth-divider::after {
+    right: 0;
+}
+
+.auth-divider span {
+    background-color: var(--background-color);
+    padding: 0 10px;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.social-login {
+    margin-bottom: 20px;
+    width: 100%;
+    min-height: 40px;
+    display: block;
+}
+
+.google-btn {
+    min-height: 40px;
+    width: 100%;
+    display: block;
+}
+
+/* Remove any interfering dark mode styles */
+body.dark-mode .google-btn {
+    background-color: transparent !important;
+    border-color: transparent !important;
+}
