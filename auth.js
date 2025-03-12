@@ -1,10 +1,28 @@
 class AuthSystem {
     constructor() {
         this.currentUser = null;
+        this.googleAuth = null;
         this.init();
+        
+        // Add debug logging
+        console.log('AuthSystem initialized');
     }
 
     init() {
+        // Ensure DOM is loaded before initializing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.initializeSystem());
+        } else {
+            this.initializeSystem();
+        }
+    }
+
+    initializeSystem() {
+        console.log('Initializing AuthSystem...');
+        
+        // Load Google Sign-In API
+        this.loadGoogleSignIn();
+        
         // Check if user is logged in
         const token = localStorage.getItem('authToken');
         if (token) {
@@ -12,6 +30,117 @@ class AuthSystem {
         }
         this.setupEventListeners();
         this.updateUIState();
+    }
+
+    loadGoogleSignIn() {
+        console.log('Loading Google Sign-In...');
+        
+        // Check if Google API is already loaded
+        if (typeof google !== 'undefined' && google.accounts) {
+            this.initializeGoogleSignIn();
+        } else {
+            // Wait for Google API to load
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    if (typeof google !== 'undefined' && google.accounts) {
+                        this.initializeGoogleSignIn();
+                    } else {
+                        console.error('Google Identity Services failed to load');
+                    }
+                }, 1000); // Give extra time for Google API to initialize
+            });
+        }
+    }
+
+    initializeGoogleSignIn() {
+        console.log('Initializing Google Sign-In...');
+        
+        // Determine if we're in local development or production
+        const isLocalhost = window.location.hostname === 'localhost' || 
+                           window.location.hostname === '127.0.0.1';
+
+        google.accounts.id.initialize({
+            client_id: '438519504218-4fdagbgbgouqtcpjdng2bofdp68270bh.apps.googleusercontent.com',
+            callback: this.handleGoogleSignIn.bind(this),
+            auto_select: false,
+            cancel_on_tap_outside: true,
+            ux_mode: 'popup'  // Changed from 'redirect' to 'popup' for easier local testing
+        });
+
+        const googleBtn = document.getElementById('googleLogin');
+        if (googleBtn) {
+            console.log('Rendering Google Sign-In button...');
+            google.accounts.id.renderButton(googleBtn, {
+                type: 'standard',
+                theme: document.body.classList.contains('dark-mode') ? 'filled_black' : 'outline',
+                size: 'large',
+                text: 'continue_with',
+                shape: 'rectangular',
+                width: '100%'
+            });
+        } else {
+            console.error('Google Sign-In button container not found');
+        }
+    }
+
+    async handleGoogleSignIn(response) {
+        const notifications = new NotificationSystem();
+        
+        try {
+            console.log('Google Sign-In response received:', response);
+            
+            // Decode the JWT token to get user info
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            console.log('Decoded user info:', payload);
+
+            // Use the actual Google user info instead of mock data
+            const result = {
+                success: true,
+                token: response.credential, // Store the actual Google token
+                user: {
+                    name: payload.name,
+                    email: payload.email,
+                    avatar: payload.picture
+                }
+            };
+
+            // Store user info
+            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('userInfo', JSON.stringify(result.user));
+            this.currentUser = result.user;
+            this.updateUIState();
+
+            // Show success message
+            notifications.push('Successfully signed in with Google!', 'success');
+            
+            // Handle redirect
+            setTimeout(() => {
+                const redirectUrl = new URLSearchParams(window.location.search).get('redirect') || 'enrollment.html';
+                window.location.href = redirectUrl;
+            }, 1000);
+
+        } catch (error) {
+            console.error('Google Sign-In error:', error);
+            notifications.push('Failed to sign in with Google. Please try again.', 'error');
+        }
+    }
+
+    async verifyGoogleToken(token) {
+        // In a real application, send this token to your backend for verification
+        // For demo purposes, we'll simulate a successful response
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve({
+                    success: true,
+                    token: 'mock-jwt-token',
+                    user: {
+                        name: 'Google User',
+                        email: 'user@gmail.com',
+                        avatar: 'https://lh3.googleusercontent.com/...'
+                    }
+                });
+            }, 1000);
+        });
     }
 
     setupEventListeners() {
@@ -48,23 +177,23 @@ class AuthSystem {
     }
 
     updateUIState() {
+        const userInfo = this.currentUser || JSON.parse(localStorage.getItem('userInfo'));
+        const token = localStorage.getItem('authToken');
         const authButtons = document.querySelector('.auth-buttons');
         const userProfile = document.querySelector('.user-profile');
-        const userName = document.getElementById('userName');
         const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
 
-        if (this.currentUser) {
-            // User is logged in
-            authButtons.style.display = 'none';
-            userProfile.style.display = 'block';
-            userName.textContent = this.currentUser.name;
-            if (this.currentUser.avatar) {
-                userAvatar.src = this.currentUser.avatar;
+        if (token && userInfo) {
+            if (authButtons) authButtons.style.display = 'none';
+            if (userProfile) {
+                userProfile.style.display = 'flex';
+                if (userAvatar) userAvatar.src = userInfo.avatar || 'images/default-avatar.png';
+                if (userName) userName.textContent = userInfo.name;
             }
         } else {
-            // User is logged out
-            authButtons.style.display = 'flex';
-            userProfile.style.display = 'none';
+            if (authButtons) authButtons.style.display = 'flex';
+            if (userProfile) userProfile.style.display = 'none';
         }
     }
 
@@ -141,4 +270,7 @@ class AuthSystem {
     validateToken(token) {
         // Implement token validation logic
     }
-} 
+}
+
+// Initialize AuthSystem
+const authSystem = new AuthSystem(); 
