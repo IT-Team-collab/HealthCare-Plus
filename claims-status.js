@@ -1,162 +1,221 @@
 class ClaimsStatus {
     constructor() {
-        this.claims = [];
+        this.claims = this.loadClaims();
         this.init();
     }
 
     init() {
-        this.fetchClaims();
+        this.updateSummary();
+        this.displayClaims();
         this.setupEventListeners();
     }
 
-    setupEventListeners() {
-        const searchInput = document.querySelector('.search-bar input');
-        const statusFilter = document.getElementById('statusFilter');
-        const dateFilter = document.getElementById('dateFilter');
+    loadClaims() {
+        return JSON.parse(localStorage.getItem('claims') || '[]');
+    }
 
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => this.filterClaims());
-        }
-        if (statusFilter) {
-            statusFilter.addEventListener('change', () => this.filterClaims());
-        }
-        if (dateFilter) {
-            dateFilter.addEventListener('change', () => this.filterClaims());
-        }
+    updateSummary() {
+        const totalClaims = this.claims.length;
+        const pendingClaims = this.claims.filter(claim => claim.status === 'pending').length;
+        const approvedClaims = this.claims.filter(claim => claim.status === 'approved').length;
+        const rejectedClaims = this.claims.filter(claim => claim.status === 'rejected').length;
 
-        // Modal close button
-        const closeModal = document.querySelector('.close-modal');
-        if (closeModal) {
-            closeModal.addEventListener('click', () => this.closeModal());
+        const summaryCards = document.querySelectorAll('.summary-card .count');
+        if (summaryCards.length >= 4) {
+            summaryCards[0].textContent = totalClaims;
+            summaryCards[1].textContent = pendingClaims;
+            summaryCards[2].textContent = approvedClaims;
+            summaryCards[3].textContent = rejectedClaims;
         }
     }
 
-    async fetchClaims() {
-        // Simulate API call
-        const mockClaims = [
-            {
-                id: 'CLM001',
-                date: '2024-03-15',
-                type: 'Medical Visit',
-                amount: 150.00,
-                status: 'pending',
-                provider: 'Dr. Smith Clinic',
-                description: 'Regular checkup',
-                documents: ['receipt.pdf', 'medical_report.pdf']
-            },
-            // Add more mock claims...
-        ];
+    displayClaims() {
+        const tableBody = document.getElementById('claimsTableBody');
+        if (!tableBody) return;
 
-        this.claims = mockClaims;
-        this.renderClaims(this.claims);
-    }
+        if (this.claims.length === 0) {
+            tableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="no-claims">
+                        <i class="fas fa-file-medical"></i>
+                        <p>No claims found</p>
+                        <a href="claims.html" class="btn primary">Submit a Claim</a>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
 
-    renderClaims(claims) {
-        const tbody = document.getElementById('claimsTableBody');
-        if (!tbody) return;
-
-        tbody.innerHTML = claims.map(claim => `
+        tableBody.innerHTML = this.claims.map(claim => `
             <tr>
                 <td>${claim.id}</td>
                 <td>${new Date(claim.date).toLocaleDateString()}</td>
-                <td>${claim.type}</td>
-                <td>$${claim.amount.toFixed(2)}</td>
+                <td>${this.formatClaimType(claim.type)}</td>
+                <td>$${parseFloat(claim.amount).toFixed(2)}</td>
                 <td>
-                    <span class="status-badge status-${claim.status}">
+                    <span class="status-badge ${claim.status}">
                         ${claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
                     </span>
                 </td>
                 <td>
-                    <button class="btn secondary" onclick="claimsStatus.viewDetails('${claim.id}')">
+                    <button class="btn secondary view-details" data-claim-id="${claim.id}">
                         View Details
                     </button>
                 </td>
             </tr>
         `).join('');
+
+        // Add click handlers for view details buttons
+        tableBody.querySelectorAll('.view-details').forEach(btn => {
+            btn.addEventListener('click', () => this.showClaimDetails(btn.dataset.claimId));
+        });
     }
 
-    filterClaims() {
-        const searchQuery = document.querySelector('.search-bar input').value.toLowerCase();
-        const statusFilter = document.getElementById('statusFilter').value;
-        const dateFilter = parseInt(document.getElementById('dateFilter').value);
+    formatClaimType(type) {
+        return type.split('-').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+    }
 
-        let filtered = this.claims.filter(claim => {
-            const matchesSearch = claim.id.toLowerCase().includes(searchQuery) ||
-                                claim.type.toLowerCase().includes(searchQuery);
-            
+    setupEventListeners() {
+        // Search functionality
+        const searchInput = document.querySelector('.search-bar input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.filterClaims(e.target.value);
+            });
+        }
+
+        // Status filter
+        const statusFilter = document.getElementById('statusFilter');
+        if (statusFilter) {
+            statusFilter.addEventListener('change', () => {
+                this.filterClaims(document.querySelector('.search-bar input')?.value || '');
+            });
+        }
+    }
+
+    filterClaims(searchTerm = '') {
+        const statusFilter = document.getElementById('statusFilter')?.value;
+        const filteredClaims = this.claims.filter(claim => {
+            const matchesSearch = !searchTerm || 
+                claim.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                claim.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                claim.provider.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesStatus = !statusFilter || claim.status === statusFilter;
-            
-            const matchesDate = !dateFilter || 
-                              (new Date(claim.date) >= new Date(Date.now() - dateFilter * 24 * 60 * 60 * 1000));
-
-            return matchesSearch && matchesStatus && matchesDate;
+            return matchesSearch && matchesStatus;
         });
 
-        this.renderClaims(filtered);
+        const tableBody = document.getElementById('claimsTableBody');
+        if (tableBody) {
+            if (filteredClaims.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-claims">
+                            <i class="fas fa-search"></i>
+                            <p>No claims match your search</p>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                this.displayFilteredClaims(filteredClaims);
+            }
+        }
     }
 
-    viewDetails(claimId) {
+    displayFilteredClaims(claims) {
+        const tableBody = document.getElementById('claimsTableBody');
+        if (!tableBody) return;
+
+        tableBody.innerHTML = claims.map(claim => `
+            <tr>
+                <td>${claim.id}</td>
+                <td>${new Date(claim.date).toLocaleDateString()}</td>
+                <td>${this.formatClaimType(claim.type)}</td>
+                <td>$${parseFloat(claim.amount).toFixed(2)}</td>
+                <td>
+                    <span class="status-badge ${claim.status}">
+                        ${claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn secondary view-details" data-claim-id="${claim.id}">
+                        View Details
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+
+        // Reattach event listeners
+        tableBody.querySelectorAll('.view-details').forEach(btn => {
+            btn.addEventListener('click', () => this.showClaimDetails(btn.dataset.claimId));
+        });
+    }
+
+    showClaimDetails(claimId) {
         const claim = this.claims.find(c => c.id === claimId);
         if (!claim) return;
 
         const modal = document.getElementById('claimDetailsModal');
-        const modalBody = modal.querySelector('.modal-body');
+        if (!modal) return;
 
+        const modalBody = modal.querySelector('.modal-body');
         modalBody.innerHTML = `
-            <div class="claim-details">
-                <div class="detail-row">
-                    <strong>Claim ID:</strong>
-                    <span>${claim.id}</span>
+            <div class="claim-detail-grid">
+                <div class="detail-item">
+                    <h4>Claim ID</h4>
+                    <p>${claim.id}</p>
                 </div>
-                <div class="detail-row">
-                    <strong>Date:</strong>
-                    <span>${new Date(claim.date).toLocaleDateString()}</span>
+                <div class="detail-item">
+                    <h4>Service Date</h4>
+                    <p>${new Date(claim.date).toLocaleDateString()}</p>
                 </div>
-                <div class="detail-row">
-                    <strong>Type:</strong>
-                    <span>${claim.type}</span>
+                <div class="detail-item">
+                    <h4>Type</h4>
+                    <p>${this.formatClaimType(claim.type)}</p>
                 </div>
-                <div class="detail-row">
-                    <strong>Provider:</strong>
-                    <span>${claim.provider}</span>
+                <div class="detail-item">
+                    <h4>Provider</h4>
+                    <p>${claim.provider}</p>
                 </div>
-                <div class="detail-row">
-                    <strong>Amount:</strong>
-                    <span>$${claim.amount.toFixed(2)}</span>
+                <div class="detail-item">
+                    <h4>Amount</h4>
+                    <p>$${parseFloat(claim.amount).toFixed(2)}</p>
                 </div>
-                <div class="detail-row">
-                    <strong>Status:</strong>
-                    <span class="status-badge status-${claim.status}">
+                <div class="detail-item">
+                    <h4>Status</h4>
+                    <p class="status-badge ${claim.status}">
                         ${claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
-                    </span>
+                    </p>
                 </div>
-                <div class="detail-row">
-                    <strong>Description:</strong>
-                    <p>${claim.description}</p>
+                <div class="detail-item full-width">
+                    <h4>Description</h4>
+                    <p>${claim.description || 'No description provided'}</p>
                 </div>
-                <div class="detail-row">
-                    <strong>Documents:</strong>
-                    <ul class="document-list">
-                        ${claim.documents.map(doc => `
-                            <li>
-                                <i class="fas fa-file-pdf"></i>
-                                <span>${doc}</span>
-                                <button class="btn secondary">Download</button>
-                            </li>
-                        `).join('')}
-                    </ul>
-                </div>
+                ${claim.documents.length ? `
+                    <div class="detail-item full-width">
+                        <h4>Supporting Documents</h4>
+                        <ul class="document-list">
+                            ${claim.documents.map(doc => `
+                                <li><i class="fas fa-file"></i> ${doc}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
             </div>
         `;
 
         modal.classList.add('active');
-    }
 
-    closeModal() {
-        const modal = document.getElementById('claimDetailsModal');
-        modal.classList.remove('active');
+        // Close modal functionality
+        const closeBtn = modal.querySelector('.close-modal');
+        if (closeBtn) {
+            closeBtn.onclick = () => modal.classList.remove('active');
+        }
     }
 }
 
 // Initialize Claims Status
-const claimsStatus = new ClaimsStatus(); 
+document.addEventListener('DOMContentLoaded', () => {
+    new ClaimsStatus();
+}); 
