@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Enroll in Healthcare Plan - HealthCare Plus</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dark-mode.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5468363493773000"
      crossorigin="anonymous"></script>
@@ -83,10 +83,6 @@
                                 <input type="date" id="dob" name="dob" required>
                             </div>
                             <div class="form-group">
-                                <label for="ssn">SSN</label>
-                                <input type="text" id="ssn" name="ssn" pattern="\d{3}-\d{2}-\d{4}" placeholder="XXX-XX-XXXX" required>
-                            </div>
-                            <div class="form-group">
                                 <label for="address">Address</label>
                                 <input type="text" id="address" name="address" required>
                             </div>
@@ -103,17 +99,148 @@
 
                     <!-- Step 2: Medical History -->
                     <div class="enrollment-step hidden" id="step2">
-                        <!-- Medical history questions -->
+                        <h2>Medical History</h2>
+                        <form id="medicalHistoryForm">
+                            <div class="form-group">
+                                <label>Do you have any pre-existing medical conditions?</label>
+                                <div class="radio-group">
+                                    <input type="radio" id="conditions-yes" name="hasConditions" value="yes">
+                                    <label for="conditions-yes">Yes</label>
+                                    <input type="radio" id="conditions-no" name="hasConditions" value="no">
+                                    <label for="conditions-no">No</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group conditions-details" style="display: none;">
+                                <label for="conditions">Please specify your conditions:</label>
+                                <textarea id="conditions" name="conditions" rows="4"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Are you currently taking any medications?</label>
+                                <div class="radio-group">
+                                    <input type="radio" id="medications-yes" name="hasMedications" value="yes">
+                                    <label for="medications-yes">Yes</label>
+                                    <input type="radio" id="medications-no" name="hasMedications" value="no">
+                                    <label for="medications-no">No</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group medications-details" style="display: none;">
+                                <label for="medications">Please list your current medications:</label>
+                                <textarea id="medications" name="medications" rows="4"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lastCheckup">Date of Last Medical Checkup:</label>
+                                <input type="date" id="lastCheckup" name="lastCheckup">
+                            </div>
+                        </form>
                     </div>
 
                     <!-- Step 3: Plan Selection -->
                     <div class="enrollment-step hidden" id="step3">
-                        <!-- Plan options and comparison -->
+                        <h2>Select Your Plan</h2>
+                        <form id="planSelectionForm">
+                            <div class="plans-grid">
+                                <div class="plan-option">
+                                    <input type="radio" id="basic-plan" name="selectedPlan" value="basic">
+                                    <label for="basic-plan" class="plan-card">
+                                        <div class="plan-header">
+                                            <h3>Basic Plan</h3>
+                                            <div class="price">$199/month</div>
+                                        </div>
+                                        <div class="plan-features">
+                                            <ul>
+                                                <li><i class="fas fa-check"></i> Primary Care Visits</li>
+                                                <li><i class="fas fa-check"></i> Emergency Care</li>
+                                                <li><i class="fas fa-check"></i> Basic Prescriptions</li>
+                                                <li><i class="fas fa-check"></i> Preventive Care</li>
+                                            </ul>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="plan-option">
+                                    <input type="radio" id="standard-plan" name="selectedPlan" value="standard">
+                                    <label for="standard-plan" class="plan-card featured">
+                                        <div class="featured-tag">Most Popular</div>
+                                        <div class="plan-header">
+                                            <h3>Standard Plan</h3>
+                                            <div class="price">$299/month</div>
+                                        </div>
+                                        <div class="plan-features">
+                                            <ul>
+                                                <li><i class="fas fa-check"></i> All Basic Plan Features</li>
+                                                <li><i class="fas fa-check"></i> Specialist Visits</li>
+                                                <li><i class="fas fa-check"></i> Extended Prescriptions</li>
+                                                <li><i class="fas fa-check"></i> Basic Dental Coverage</li>
+                                            </ul>
+                                        </div>
+                                    </label>
+                                </div>
+
+                                <div class="plan-option">
+                                    <input type="radio" id="premium-plan" name="selectedPlan" value="premium">
+                                    <label for="premium-plan" class="plan-card">
+                                        <div class="plan-header">
+                                            <h3>Premium Plan</h3>
+                                            <div class="price">$499/month</div>
+                                        </div>
+                                        <div class="plan-features">
+                                            <ul>
+                                                <li><i class="fas fa-check"></i> All Standard Plan Features</li>
+                                                <li><i class="fas fa-check"></i> Full Dental & Vision</li>
+                                                <li><i class="fas fa-check"></i> Mental Health Coverage</li>
+                                                <li><i class="fas fa-check"></i> International Coverage</li>
+                                            </ul>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
                     <!-- Step 4: Review & Payment -->
                     <div class="enrollment-step hidden" id="step4">
-                        <!-- Summary and payment -->
+                        <h2>Review & Payment</h2>
+                        <form id="paymentForm">
+                            <div class="review-section">
+                                <h3>Plan Summary</h3>
+                                <div class="summary-details">
+                                    <!-- Will be populated dynamically -->
+                                </div>
+                            </div>
+
+                            <div class="payment-section">
+                                <h3>Payment Information</h3>
+                                <div class="form-group">
+                                    <label for="cardName">Name on Card</label>
+                                    <input type="text" id="cardName" name="cardName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cardNumber">Card Number</label>
+                                    <input type="text" id="cardNumber" name="cardNumber" pattern="\d{16}" placeholder="1234 5678 9012 3456" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="expiryDate">Expiry Date</label>
+                                        <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="cvv">CVV</label>
+                                        <input type="text" id="cvv" name="cvv" pattern="\d{3,4}" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="terms-section">
+                                <div class="form-group">
+                                    <input type="checkbox" id="termsAccept" name="termsAccept" required>
+                                    <label for="termsAccept">I agree to the Terms and Conditions and Privacy Policy</label>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -126,44 +253,47 @@
         </section>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer (Same as index.html) -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>Contact Us</h3>
-                <p>
-                    <i class="fas fa-phone"></i> 1-800-HEALTH-PLUS<br>
-                    <i class="fas fa-envelope"></i> info@healthcareplus.com<br>
-                    <i class="fas fa-location-dot"></i> 123 Healthcare Ave, Makerere Hill
-                </p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin"></i></a>
+        <!-- ... (same footer content as index.html) ... -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>
+                        <i class="fas fa-phone"></i> 1-800-HEALTH-PLUS<br>
+                        <i class="fas fa-envelope"></i> info@healthcareplus.com<br>
+                        <i class="fas fa-location-dot"></i> 123 Healthcare Ave, Makerere hill
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 HealthCare Plus. All rights reserved.</p>
-        </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 HealthCare Plus. All rights reserved.</p>
+            </div>
+        </footer>
     </footer>
 
-    <script src="main.js"></script>
-    <script src="dark-mode.js"></script>
-    <script src="hamburger.js"></script>
-    <script src="notifications.js"></script>
-    <script src="enrollment.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dark-mode.js"></script>
+    <script src="js/hamburger.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/enrollment.js"></script>
 </body>
 </html> 
