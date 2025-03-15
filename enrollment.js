@@ -200,8 +200,8 @@ class EnrollmentSystem {
             
             // Redirect to dashboard after 2 seconds
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000);
+                window.location.href = 'claims-status.html';
+            }, 1000);
         } catch (error) {
             notifications.push('Failed to submit enrollment. Please try again.', 'error');
         }
